@@ -7,6 +7,7 @@
 3、对应的包已经在yum.example.com源里面有了
 
 4、对应的包目录,kube-master,kube-node,flannel,etcd对应的包目录结果如下
+```shell
 kube-master
 .
 ├── bin
@@ -49,6 +50,7 @@ etcd
 │   └── flannel_net_add.sh
 ├── conf
 └── data
+```
 
 
 二、创建秘钥
@@ -89,6 +91,7 @@ salt masters state.sls k8s.kube-master
 salt nodes state.sls k8s.kube-node
 
 四、/srv/pillar/k8s.sls中配置参数说明
+```shell
 k8s:
   lvm_dev: /dev/sdb				# direct-lvm对应的硬盘盘符
   docker_ver: 1.13.1				# docker版本
@@ -103,6 +106,7 @@ k8s:
   service_node_port_range: 30000-65535		# k8s中service对应的port段
   k8s_domain: k8s.org				# k8s集群里面的域名开始字符串，需要进一步了解
   registry: registry.topsecret.xunlei.cn	# 镜像源域名
+```
 
 五、todo
 
