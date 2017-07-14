@@ -1,11 +1,12 @@
-{% set etcd_ver = '3.2.1' %}
-{% set data = '/opt/etcd/data' %}
-{% set ip = salt['network.ip_addrs']('ens192')[0] %}
+#{% set etcd_ver = '3.2.1' %}
+#{% set data = '/opt/etcd/data' %}
+#{% set net_dev =  pillar['k8s']['interface'] %}
+{% set ip = salt['network.ip_addrs'](pillar['k8s']['interface'])[0] %}
 
 etcd_install:
   pkg.installed:
-    - sources:
-      - etcd: http://example.com/pkgs/etcd-{{ etcd_ver }}-1.x86_64.rpm
+    - pkgs:
+      - etcd: {{ pillar['k8s']['etcd_ver'] }}
 
 etcd.conf:
   file.managed:
@@ -18,7 +19,7 @@ etcd.conf:
     - template: jinja
     - defaults:
       IP: {{ ip }}
-      DATADIR: {{ data }}
+      DATADIR: {{ pillar['k8s']['etcd_data'] }}
 
 etcd.service.systemd:
   file.managed:

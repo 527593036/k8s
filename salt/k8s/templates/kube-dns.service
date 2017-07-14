@@ -1,0 +1,18 @@
+[Unit]
+Description=Kubernetes DNS Server
+Documentation=https://github.com/kubernetes/kubernetes
+After=kube-apiserver.service
+Required=kube-apiserver.service
+
+[Service]
+EnvironmentFile=-/opt/kube-master/conf/kube-dns.conf
+ExecStart=/opt/kube-master/bin/kube-dns ${KUBE_LOGTOSTDERR}         \
+                  ${KUBE_LOG_LEVEL}           \
+                  ${KUBE_LOG_DIR}             \
+                  ${KUBE_MASTER_URL}          \
+                  ${KUBE_KUBECONFIG}          \
+                  ${KUBE_DOMAIN}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

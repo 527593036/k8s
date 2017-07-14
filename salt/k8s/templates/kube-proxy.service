@@ -1,0 +1,16 @@
+[Unit]
+Description=Kubernetes Proxy
+After=network.target
+
+[Service]
+EnvironmentFile=-/opt/kube-node/conf/kube-proxy.conf
+ExecStart=/opt/kube-node/bin/kube-proxy    ${KUBE_LOG_LEVEL}   \
+                    ${KUBE_LOGTOSTDERR} \
+                    ${KUBE_LOG_DIR}     \
+                    ${NODE_HOSTNAME}    \
+                    ${KUBE_KUBECONFIG}  \
+                    ${KUBE_MASTER}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

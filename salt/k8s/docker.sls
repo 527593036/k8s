@@ -1,7 +1,12 @@
+salt://k8s/templates/yum.sh:
+  cmd.script:
+    - cwd: /usr/local/bin
+    - unless: test -f /etc/yum.repos.d/k8s.repo
+
 docker_pkgs:
   pkg.installed:
     - pkgs:
-      - docker 
+      - docker-engine: {{ pillar['k8s']['docker_ver'] }}
 
 daemon.json:
   file.managed:
@@ -39,4 +44,14 @@ docker_service:
       - file: docker.service
       - file: docker.options
 
-
+pause.tar:
+  file.managed:
+    - name: /usr/local/src/pause.tar
+    - source: salt://k8s/templates/pause.tar
+    - user: root
+    - mode: 0600
+  cmd.run:
+    - name: cd /usr/local/src/;docker image load -i pause.tar
+    - unless: docker images | grep pause
+    - require:
+      - file: pause.tar

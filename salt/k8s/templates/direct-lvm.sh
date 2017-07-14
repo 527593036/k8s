@@ -1,8 +1,4 @@
-#!/usr/bin/env bash
-#
-# Created on 2017/6/18
-#
-# @author: zhujin
+#!/bin/bash
 
 data_dev={{ LVMDEV }}
 

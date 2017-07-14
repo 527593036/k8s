@@ -1,0 +1,20 @@
+[Unit]
+Description=Kubernetes Controller Manager
+Documentation=https://github.com/kubernetes/kubernetes
+After=kube-apiserver.service
+Requires=kube-apiserver.service
+
+[Service]
+EnvironmentFile=-/opt/kube-master/conf/kube-controller-manager.conf
+ExecStart=/opt/kube-master/bin/kube-controller-manager ${KUBE_LOGTOSTDERR}  \
+                                ${KUBE_LOG_LEVEL}    \
+                                ${KUBE_LEADER_ELECT} \
+                                ${KUBE_LOG_DIR}      \
+                                ${KUBE_KUBECONFIG}      \
+                                ${KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE}      \
+                                ${KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE}      \
+                                ${KUBE_MASTER}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

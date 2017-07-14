@@ -13,3 +13,10 @@ iptables:
     - reload: True
     - watch:
       - file: /etc/sysconfig/iptables
+
+k8s.service.route:
+  cmd.run:
+    - name: ip ro add 172.24.0.0/16 dev pillar['k8s']['interface']
+  file.append:
+    - name: /etc/rc.local
+    - text: ip ro add 172.24.0.0/16 dev pillar['k8s']['interface']

@@ -1,0 +1,27 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/kubernetes/kubernetes
+After=etcd.service
+Wants=etcd.service
+
+[Service]
+EnvironmentFile=-/opt/kube-master/conf/kube-apiserver.conf
+ExecStart=/opt/kube-master/bin/kube-apiserver ${KUBE_LOGTOSTDERR}         \
+                        ${KUBE_LOG_LEVEL}           \
+                        ${KUBE_LOG_DIR}             \
+                        ${KUBE_ETCD_SERVERS}        \
+                        ${KUBE_API_PORT}            \
+                        ${KUBE_API_SECURE_PORT}     \
+                        ${NODE_PORT}                \
+                        ${KUBE_ALLOW_PRIV}          \
+                        ${KUBE_ADVERTISE_ADDR}      \
+                        ${KUBE_SERVICE_ADDRESSES}   \
+                        ${KUBE_SERVICE_NODE_PORTS}  \
+                        ${KUBE_API_CLIENT_CA_FILE}   \
+                        ${KUBE_API_TLS_CERT_FILE}   \
+                        ${KUBE_API_TLS_PRIVATE_KEY_FILE}   \
+                        ${KUBE_ADMISSION_CONTROL}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

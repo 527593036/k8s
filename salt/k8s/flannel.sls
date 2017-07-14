@@ -1,11 +1,7 @@
-{% set flannel_ver = '0.7.1' %}
-{% set etcd_domain = '10.10.75.133' %}
-{% set interface = 'ens192' %}
-
 flannel_install:
   pkg.installed:
-    - sources:
-      - flannel: http://example.com/pkgs/flannel-{{ flannel_ver }}-1.x86_64.rpm
+    - pkgs:
+      - flannel: {{ pillar['k8s']['flannel_ver'] }}
 
 flannel.conf:
   file.managed:
@@ -17,7 +13,7 @@ flannel.conf:
       - pkg: flannel_install
     - template: jinja
     - defaults:
-      ETCD_DOMAIN: {{ etcd_domain }}
+      ETCD_DOMAIN: {{ pillar['k8s']['etcd_domain'] }}
 
 flannel.service.systemd:
   file.managed:
@@ -27,7 +23,7 @@ flannel.service.systemd:
     - mode: 0644
     - template: jinja
     - defaults:
-      INTERFACE: {{ interface }}
+      INTERFACE: {{ pillar['k8s']['interface'] }}
 
 flannel.service:
   service.running:
@@ -42,11 +38,3 @@ flannel.service:
       - pkg: flannel_install
       - file: flannel.conf
       - file: flannel.service.systemd
-
-flannel.route:
-  cmd.run:
-    - name: ip ro add 172.24.0.0/16 dev ens192
-  file.append:
-    - name: /etc/rc.local
-    - text: ip ro add 172.24.0.0/16 dev ens192
-
