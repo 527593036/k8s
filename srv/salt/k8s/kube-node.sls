@@ -21,7 +21,8 @@ kubelet.conf:
     - template: jinja
     - defaults:
       NODE_ADDRESS: {{ ip }}
-      MASTER_ADDRESS: {{ pillar['k8s']['master_addr'] }}
+      NODE_HOSTNAME: {{ grains['fqdn'] }}
+      MASTER_ADDRESS: {{ pillar['k8s']['master_cluster']['vip'] }}
       KUBE_DOMAIN: {{ pillar['k8s']['k8s_domain'] }}
       REGISTRY_DOMAIN: {{ pillar['k8s']['registry'] }}
     - require:
@@ -33,6 +34,12 @@ kubelet.service.systemd:
     - source: salt://k8s/templates/kubelet.service
     - user: root
     - mode: 0600
+
+systemd.daemon-reload.service.kubelet:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onchanges:
+      - file: kubelet.service.systemd
 
 kubelet.service:
   service.running:
@@ -47,6 +54,7 @@ kubelet.service:
     - watch:
       - file: kubelet.service.systemd
       - file: kubelet.conf
+      - cmd: systemd.daemon-reload.service.kubelet
 
 kube-proxy.conf:
   file.managed:
@@ -57,7 +65,7 @@ kube-proxy.conf:
     - template: jinja
     - defaults:
       NODE_ADDRESS: {{ ip }}
-      MASTER_ADDRESS: {{ pillar['k8s']['master_addr'] }}
+      MASTER_ADDRESS: {{ pillar['k8s']['master_cluster']['vip'] }}
     - require:
       - pkg: kube-node_install
 
@@ -67,6 +75,12 @@ kube-proxy.service.systemd:
     - source: salt://k8s/templates/kube-proxy.service
     - user: root
     - mode: 0600
+
+systemd.daemon-reload.service.kube-proxy:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onchanges:
+      - file: kube-proxy.service.systemd
 
 kube-proxy.service:
   service.running:
@@ -81,3 +95,4 @@ kube-proxy.service:
     - watch:
       - file: kube-proxy.service.systemd
       - file: kube-proxy.conf
+

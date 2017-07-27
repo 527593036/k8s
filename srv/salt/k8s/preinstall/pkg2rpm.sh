@@ -17,5 +17,5 @@ fi
 fpm -C ${SDIR} -s dir -t rpm -n ${NAME} -v ${VER} -f -p /data/vhosts/example.com/pkgs ${DDIR}
 
 rsync -avzP /data/vhosts/example.com/pkgs/${NAME}-${VER}-1.x86_64.rpm \
-    xcloud@example.com::xcloud/ \
+    user@example.com::k8s/ \
     --password-file=/etc/rsync.pass

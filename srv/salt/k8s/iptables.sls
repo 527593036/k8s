@@ -16,7 +16,7 @@ iptables:
 
 k8s.service.route:
   cmd.run:
-    - name: ip ro add 172.24.0.0/16 dev pillar['k8s']['interface']
+    - name: ip ro add 172.24.0.0/16 dev ens192
   file.append:
     - name: /etc/rc.local
-    - text: ip ro add 172.24.0.0/16 dev pillar['k8s']['interface']
+    - text: ip ro add 172.24.0.0/16 dev ens192

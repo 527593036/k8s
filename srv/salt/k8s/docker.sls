@@ -1,8 +1,3 @@
-salt://k8s/templates/yum.sh:
-  cmd.script:
-    - cwd: /usr/local/bin
-    - unless: test -f /etc/yum.repos.d/k8s.repo
-
 docker_pkgs:
   pkg.installed:
     - pkgs:
@@ -28,6 +23,8 @@ docker.options:
     - source: salt://k8s/templates/docker
     - user: root
     - mode: 0600
+    - defaults:
+      REGISTRY: {{  pillar['k8s']['registry'] }}
 
 docker_service:
   service.running:

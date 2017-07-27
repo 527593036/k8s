@@ -13,7 +13,10 @@ flannel.conf:
       - pkg: flannel_install
     - template: jinja
     - defaults:
-      ETCD_DOMAIN: {{ pillar['k8s']['etcd_domain'] }}
+      ETCD_DOMAIN: {{ pillar['k8s']['master_cluster']['vip'] }}
+      NODE1_IP: {{ pillar['k8s']['master_cluster']['node1']['ip'] }}
+      NODE2_IP: {{ pillar['k8s']['master_cluster']['node2']['ip'] }}
+      NODE3_IP: {{ pillar['k8s']['master_cluster']['node3']['ip'] }}
 
 flannel.service.systemd:
   file.managed:
@@ -24,6 +27,12 @@ flannel.service.systemd:
     - template: jinja
     - defaults:
       INTERFACE: {{ pillar['k8s']['interface'] }}
+
+systemd.service:
+  cmd.run:
+    - name: systemctl daemon-reload
+    - onchanges: 
+      - file: flannel.service.systemd
 
 flannel.service:
   service.running:

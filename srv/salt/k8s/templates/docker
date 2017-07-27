@@ -1,0 +1,1 @@
+DOCKER_OPTS=" --log-driver=json-file --log-opt max-size=100m --log-opt max-file=5 --default-ulimit nofile=102400:102400 --registry-mirror=http://aad0405c.m.daocloud.io --insecure-registry={{ REGISTRY }}"

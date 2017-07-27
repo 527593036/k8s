@@ -6,9 +6,16 @@ After=network.target
 EnvironmentFile=/opt/etcd/conf/etcd.conf
 # set GOMAXPROCS to number of processors
 ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /opt/etcd/bin/etcd \
+	${ETCD_NAME}	\
 	${ETCD_DATA_DIR} \
 	${ETCD_LISTEN_CLIENT_URLS} \
-	${ETCD_ADVERTISE_CLIENT_URLS}"       
+	${ETCD_ADVERTISE_CLIENT_URLS}      \
+	${ETCD_LISTEN_PEER_URLS}               \
+        ${ETCD_INITIAL_ADVERTISE_PEER_URLS}    \
+        ${ETCD_INITIAL_CLUSTER}                \
+        ${ETCD_INITIAL_CLUSTER_STATE}          \
+        ${ETCD_INITIAL_CLUSTER_TOKEN}" 
+
 Restart=on-failure
 KillMode=process
 

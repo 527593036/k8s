@@ -7,7 +7,7 @@ FILEPATH=$(cd "$(dirname "$0")"; pwd);cd ${FILEPATH}
 # create the keys for server and kubelet
 function create-keys() {
   cd ${FILEPATH}/cert
-  ./master-ssl.sh ${MASTER} ${SERVICE_CLUSTER_IP}
+  ./master-ssl.sh ${MASTER} ${SERVICE_CLUSTER_IP} ${MASTER_NODE1_IP} ${MASTER_NODE2_IP} ${MASTER_NODE3_IP} ${K8S_DOMAIN}
   ./keys.sh
   ./node-kubeconfig.sh
   ./master-kubeconfig.sh

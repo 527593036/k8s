@@ -29,5 +29,5 @@ wget -O epel.repo http://yum.example.com/epel.repo.el5;
 wget -O saltstack.repo http://yum.example.com/saltstack.repo.el5;
 fi
 
-rm -rf k8s.repo;
-wget -O k8s.repo http://yum.example.com/k8s.repo
+rm -rf xnet.repo;
+wget -O xnet.repo http://yum.example.com/xnet.repo
