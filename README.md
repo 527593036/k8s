@@ -4,15 +4,12 @@
 
 1、工具: /srv/salt/k8s/preinstall/pkg2rpm.sh, etcd, flannel, k8s rpm包制作如下: 
 ```shell
-获取kubernetes包:
-	https://github.com/kubernetes/kubernetes/releases
-	kubernetes/cluster/get-kube-binaries.sh获取对应的包: kubernetes-server-linux-amd64.tar.gz,获取编译好的文件
+获取kubernetes包: https://github.com/kubernetes/kubernetes/releases
+kubernetes/cluster/get-kube-binaries.sh获取对应的包: kubernetes-server-linux-amd64.tar.gz,获取编译好的文件
 	
-获取etcd包: 
-	https://github.com/coreos/etcd/releases
+获取etcd包: https://github.com/coreos/etcd/releases
 	
-获取flannel包: 
-	https://github.com/coreos/flannel/releases
+获取flannel包: https://github.com/coreos/flannel/releases
 ```
 
 ```shell
@@ -80,7 +77,7 @@ fpm打包,比如打etcd的rpm, 生对应的etcd包，并上传到yum源服务器
 2、生效yum源服务器，支持yum源安装k8s对应的包
 
 二、配置文件修改，/srv/pillar/k8s.sls配置文件说明
-```shell
+```python
 k8s:
   lvm_dev: /dev/sdb                                 # direct-lvm对应的硬盘盘符
   docker_ver: 1.13.1                                # docker版本
@@ -115,32 +112,45 @@ k8s:
 
 1、iptables放开
 
+```shell
 salt -N k8s state.sls k8s.iptables
+```
 
 2、dirct-lvm安装,注意需要在/srv/pillar/k8s.sls参数lvm_dev配置direct-lvm对应的硬盘,对应的硬盘不需要格式化与挂在
 
+```shell
 salt -N k8s state.sls k8s.direct-lvm
+```
 
 3、docker安装
 
+```shell
 salt -N k8s state.sls k8s.docker
+```
 
 4、安装etcd集群,并设置k8s集群网段, 注意网络规划，规划脚本/srv/salt/k8s/templates/flannel_net_add.sh
 
+```shell
 salt -N k8s_master state.sls k8s.etcd
+```
 
 5、flannel安装
 
+```shell
 salt -N k8s state.sls k8s.flannel
+```
 
 6、kube-master集群安装
 
+```shell
 salt -N k8s_masters state.sls k8s.kube-master
+```
 
 7、kube-node安装
 
+```shell
 salt -N k8s_nodes state.sls k8s.kube-node
-
+```
 
 五、一键安装
 
@@ -148,9 +158,9 @@ salt -N k8s_nodes state.sls k8s.kube-node
 
 2、在/srv/pillar/k8s.sls文件,配置好k8s集群对应的信息
 
-3、执行oneKeyDeploy.sh
+3、执行/srv/salt/k8s/oneKeyDeploy.sh
 
-4、备注: master的高可用接入lvs,k8s对应的lvs可能不会独立一套,这里没有接入一键安装,如有需求,再考虑
+4、备注: master的高可用接入lvs或haproxy,不属于k8s安装范畴,暂不考虑接入一键安装
 
 
 六、todo
