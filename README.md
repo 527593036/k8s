@@ -77,7 +77,7 @@ fpm打包,比如打etcd的rpm, 生对应的etcd包，并上传到yum源服务器
 2、生效yum源服务器，支持yum源安装k8s对应的包
 
 二、配置文件修改，/srv/pillar/k8s.sls配置文件说明
-```python
+```yaml
 k8s:
   lvm_dev: /dev/sdb                                 # direct-lvm对应的硬盘盘符
   docker_ver: 1.13.1                                # docker版本
