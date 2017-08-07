@@ -1,8 +1,83 @@
+系统需求: centos7 x86_64
+
 一、rpm打包
 
-1、工具: /srv/salt/k8s/preinstall/pkg2rpm.sh
+1、工具: /srv/salt/k8s/preinstall/pkg2rpm.sh, etcd, flannel, k8s rpm包制作如下: 
+```shell
+获取kubernetes包:
+	https://github.com/kubernetes/kubernetes/releases
+	kubernetes/cluster/get-kube-binaries.sh获取对应的包: kubernetes-server-linux-amd64.tar.gz,获取编译好的文件
+	
+获取etcd包: 
+	https://github.com/coreos/etcd/releases
+	
+获取flannel包: 
+	https://github.com/coreos/flannel/releases
+```
 
-2、对应的包已经在yum.example.com源里面有了
+```shell
+etcd包目录:
+[root@my_test etcd]# pwd
+/opt/etcd
+[root@my_test etcd]# tree .
+.
+├── bin
+│   ├── etcd
+│   ├── etcdctl
+│   └── flannel_net_add.sh
+├── conf
+└── data
+
+flannel包目录
+[root@my_test flannel]# pwd
+/opt/flannel
+[root@my_test flannel]# tree .
+.
+├── bin
+│   ├── flanneld
+│   ├── mk-docker-opts.sh
+│   └── rm-flannel-opts.sh
+├── conf
+└── README.md
+
+kube-master包目录
+[root@my_test kube-master]# pwd
+/opt/kube-master
+[root@my_test kube-master]# tree .
+.
+├── bin
+│   ├── kube-apiserver
+│   ├── kube-controller-manager
+│   ├── kubectl
+│   ├── kube-dns
+│   └── kube-scheduler
+├── cert
+│   └── master
+├── conf
+└── logs
+
+kube-node包目录
+[root@my_test kube-node]# pwd
+/opt/kube-node
+[root@my_test kube-node]# tree .
+.
+├── bin
+│   ├── kubectl
+│   ├── kubelet
+│   └── kube-proxy
+├── cert
+│   └── node
+├── conf
+├── logs
+└── manifests
+```
+
+```shell
+fpm打包,比如打etcd的rpm, 生对应的etcd包，并上传到yum源服务器
+/srv/salt/k8s/preinstall/pkg2rpm.sh etcd 3.2.1 /opt/etcd /opt/etcd
+```
+
+2、生效yum源服务器，支持yum源安装k8s对应的包
 
 二、配置文件修改，/srv/pillar/k8s.sls配置文件说明
 ```shell
@@ -26,7 +101,7 @@ k8s:
   interface: ens192                                 # flannel关联的网卡
   kubever: 1.6.4                                    # k8s版本
   service_cluster_ip_range: 172.24.0.0/16           # k8s中service对应的ip段
-  service_node_port_range: 30000-65535              # k8s中service对应的端口段
+  service_node_port_range: 50-65535                 # k8s中service对应的端口段
   k8s_domain: k8s.org                               # k8s集群里面的域名开始字符串，需要进一步了解
   registry: registry.example.com                    # 镜像源域名
 ```
@@ -81,3 +156,4 @@ salt -N k8s_nodes state.sls k8s.kube-node
 六、todo
 
 1、镜像源安装salt化？
+
