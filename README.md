@@ -1,4 +1,6 @@
-系统需求: centos7 x86_64
+Saltstack States to deploy a Kubernetes cluster.
+
+OS: centos7 x86_64
 
 一、rpm打包
 
